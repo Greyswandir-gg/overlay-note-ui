@@ -1,0 +1,36 @@
+{
+  "menus": [
+    {
+      "layout": [
+        {
+          "type": "button",
+          "id": "command-palette:open",
+          "label": "Commands",
+          "icon": "command"
+        },
+        {
+          "type": "button",
+          "id": "markdown:toggle-preview",
+          "label": "Mode",
+          "icon": "eye"
+        },
+        {
+          "type": "button",
+          "id": "workspace:toggle-pin",
+          "label": "Pin",
+          "icon": "pin"
+        }
+      ],
+      "orientation": "horizontal",
+      "position": "top-right",
+      "buttonSize": "md",
+      "toggleButton": {
+        "type": "button",
+        "id": "overlay-note-ui:toggle-overlay",
+        "label": "Toggle",
+        "icon": "chevron-up"
+      }
+    }
+  ],
+  "isCollapsed": false
+}
