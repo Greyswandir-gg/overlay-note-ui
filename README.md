@@ -11,7 +11,7 @@ A customizable Obsidian plugin that adds overlay buttons to notes for enhanced u
 
 ## Installation
 
-1. Download the latest release from the [Releases](https://github.com/yourusername/overlay-note-ui/releases) page.
+1. Download the latest release from the [Releases]([https://github.com/yourusername/overlay-note-ui/releases](https://github.com/Greyswandir-gg/overlay-note-ui/releases/tag/Obsidian) page.
 2. Extract the files into your Obsidian vault's `.obsidian/plugins/` directory.
 3. Reload Obsidian and enable the plugin in Settings > Community plugins.
 
