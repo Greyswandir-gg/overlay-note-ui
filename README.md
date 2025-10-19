@@ -27,10 +27,7 @@ After installation, overlay buttons will appear on notes based on your configura
 Example frontmatter:
 ```yaml
 ---
-overlay-buttons:
-  - label: "Edit"
-    action: "edit"
-    position: "top-right"
+overlayMenu: "id menu-0"
 ---
 ```
 

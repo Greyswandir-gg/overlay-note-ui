@@ -165,7 +165,7 @@ class ButtonEditorModal extends Modal {
         this.item.id = cmd.id;
         if (!this.item.label) this.item.label = cmd.name;
         cmdInput.setValue(this.item.id);
-        labelInput.setValue(this.item.label || '');
+        if (labelInput) labelInput.setValue(this.item.label || '');
       }).open())
     );
 
