@@ -1,7 +1,11 @@
 {
   "id": "overlay-note-ui",
   "name": "Overlay Note UI",
+  "version": "1.0.0",
+  "minAppVersion": "1.0.0",
   "author": "Greyswandir",
+  "authorUrl": "https://github.com/Greyswandir-gg",
+  "helpUrl": "https://github.com/Greyswandir-gg/overlay-note-ui",
   "description": "Adds customizable overlay buttons to notes. Configure button layouts and positions per note or globally.",
-  "repo": "https://github.com/Greyswandir-gg/overlay-note-ui/releases/tag/1.0.0"
-  }
+  "isDesktopOnly": false
+}
