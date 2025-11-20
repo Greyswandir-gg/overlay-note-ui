@@ -616,17 +616,17 @@ class OverlayNoteUI extends Plugin {
 
     // 1) Явное определение кнопок в заметке
     const fmRows = this.normalizeButtonsToRows(fm.overlayButtons);
-    if (fmRows && fmRows.length) return { layout: fmRows.flat(), source: 'frontmatter:buttons' };
+    if (fmRows && fmRows.length) return { layout: fmRows.flat(), menuId: null, source: 'frontmatter:buttons' };
 
     // 2) Ссылка на пресет по id
     if (typeof fm.overlayMenu === 'string') {
       const preset = this.settings.menus.find(m => m.id === fm.overlayMenu);
-      if (preset) return { layout: preset.layout, source: `frontmatter:menu:${preset.id}` };
+      if (preset) return { layout: preset.layout, menuId: preset.id, source: `frontmatter:menu:${preset.id}` };
     }
 
     // 3) Дефолт
     const preset = this.settings.menus.find(m => m.id === this.settings.defaultMenuId) || this.settings.menus[0];
-    return { layout: preset?.layout || [], source: 'default' };
+    return { layout: preset?.layout || [], menuId: preset?.id || null, source: 'default' };
   }
 
   getConfig(file) {
@@ -639,8 +639,11 @@ class OverlayNoteUI extends Plugin {
       shouldShow = fm.overlay;
     }
 
-    const { layout } = this.chooseMenuForFile(file);
-    const selectedMenu = this.settings.menus.find(m => m.layout === layout) || this.settings.menus[0];
+    const { layout, menuId } = this.chooseMenuForFile(file);
+    const selectedMenu = (menuId
+      ? this.settings.menus.find(m => m.id === menuId)
+      : this.settings.menus.find(m => m.id === this.settings.defaultMenuId))
+      || this.settings.menus[0];
 
     const position = fm.overlayPosition || selectedMenu?.position || 'top-right';
     const size = selectedMenu?.buttonSize || 'md';
