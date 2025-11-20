@@ -11,7 +11,7 @@ A customizable Obsidian plugin that adds overlay buttons to notes for enhanced u
 
 ## Installation
 
-1. Download the latest release from the [Releases](https://github.com/Greyswandir-gg/overlay-note-ui/releases/tag/1.0.0) page.
+1. Download the latest release from the [Releases](https://github.com/Greyswandir-gg/overlay-note-ui/releases/tag/1.0.1) page.
 2. Extract the files into your Obsidian vault's `.obsidian/plugins/` directory.
 3. Reload Obsidian and enable the plugin in Settings > Community plugins.
 
@@ -35,6 +35,11 @@ overlayMenu: "id menu-0"
 
 - Requires Obsidian v1.4.0 or higher
 - Works on desktop and mobile
+
+## Release 1.0.1
+
+- Added drag-and-drop reordering for menu buttons to quickly rearrange layouts.
+- Refreshed the settings tab with consistent cards and clearer control groupings for easier navigation.
 
 ## Contributing
 
