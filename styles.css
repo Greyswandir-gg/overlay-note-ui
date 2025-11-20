@@ -90,27 +90,44 @@ textarea.overlay-note-ui-json-editor {
 
 
 .layout-item {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
+  gap: 8px;
+  padding: 6px 10px;
   border: 1px solid var(--background-modifier-border);
-  border-radius: 4px;
+  border-radius: 6px;
   background-color: var(--background-primary);
   font-size: 12px;
+  transition: border-color 0.12s ease, background-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.layout-item.drag-over {
+  border-color: var(--interactive-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--interactive-accent) 20%, transparent);
+}
+
+.layout-item.dragging {
+  opacity: 0.8;
+}
+
+.layout-drag-handle {
+  cursor: grab;
+  user-select: none;
+  font-size: 14px;
+  opacity: 0.8;
 }
 
 .layout-item span {
-  flex: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .layout-item button {
-  padding: 2px 4px;
-  font-size: 10px;
-  border-radius: 2px;
+  padding: 4px 6px;
+  font-size: 11px;
+  border-radius: 4px;
   border: 1px solid var(--background-modifier-border);
   background-color: var(--background-secondary);
   color: var(--text-normal);
@@ -163,4 +180,122 @@ body.is-mobile .overlay-note-ui.pos-bottom-right {
 body.is-mobile .overlay-note-ui.pos-bottom-left {
   bottom: calc(env(safe-area-inset-bottom) + 8px);
   left: calc(env(safe-area-inset-left) + 8px);
+}
+
+/* Settings page */
+.overlay-note-ui-settings {
+  max-width: 880px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.overlay-note-ui-settings h2 {
+  margin-bottom: 0;
+}
+
+.overlay-note-ui-settings h3 {
+  margin: 0 0 4px;
+}
+
+.overlay-note-ui-settings p {
+  margin: 0 0 8px;
+  line-height: 1.5;
+}
+
+.overlay-note-ui-settings .onu-muted {
+  color: var(--text-muted);
+}
+
+.overlay-note-ui-settings .onu-card {
+  border: 1px solid var(--background-modifier-border);
+  background: var(--background-primary);
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+}
+
+.overlay-note-ui-settings .onu-inline-control select,
+.overlay-note-ui-settings .onu-control-grid select,
+.overlay-note-ui-settings .onu-control-grid input,
+.overlay-note-ui-settings .onu-control-grid button,
+.overlay-note-ui-settings textarea.overlay-note-ui-json-editor,
+.overlay-note-ui-settings .setting-item-control button {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.overlay-note-ui-settings textarea.overlay-note-ui-json-editor {
+  min-height: 180px;
+  margin-bottom: 8px;
+}
+
+.overlay-note-ui-settings .onu-menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.overlay-note-ui-settings .onu-menu-card {
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 10px;
+  padding: 12px;
+  background: var(--background-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.overlay-note-ui-settings .onu-menu-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.overlay-note-ui-settings .onu-menu-card .setting-item-name {
+  font-weight: 600;
+}
+
+.overlay-note-ui-settings .onu-menu-card .setting-item-description {
+  color: var(--text-muted);
+}
+
+.overlay-note-ui-settings .onu-control-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  align-items: end;
+}
+
+.overlay-note-ui-settings .onu-control-grid > div,
+.overlay-note-ui-settings .onu-control-grid > button {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.overlay-note-ui-settings .onu-control-grid label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.overlay-note-ui-settings .onu-control-grid button {
+  align-self: stretch;
+}
+
+.overlay-note-ui-settings .setting-item-control button {
+  width: auto;
+}
+
+.overlay-note-ui-settings .onu-add-card {
+  border: 1px dashed var(--background-modifier-border);
+  background: transparent;
+}
+
+.overlay-note-ui-settings .setting-item-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
