@@ -226,6 +226,7 @@ class LayoutEditorModal extends Modal {
     super(app);
     this.layout = clone(layout || []);
     this.onSave = onSave;
+    this.dragIndex = null;
   }
 
   onOpen() {
@@ -239,7 +240,10 @@ class LayoutEditorModal extends Modal {
       layoutContainer.empty();
 
       this.layout.forEach((item, itemIdx) => {
-        const itemEl = layoutContainer.createDiv({ cls: 'layout-item' });
+        const itemEl = layoutContainer.createDiv({ cls: 'layout-item', attr: { draggable: 'true', 'data-index': itemIdx } });
+
+        const dragHandle = itemEl.createDiv({ cls: 'layout-drag-handle', text: '☰' });
+        dragHandle.setAttribute('aria-label', 'Drag to reorder');
 
         if (item.type === 'spacer') {
           itemEl.createEl('span', { text: 'Spacer' });
@@ -262,6 +266,39 @@ class LayoutEditorModal extends Modal {
         delBtn.addEventListener('click', () => {
           this.layout.splice(itemIdx, 1);
           refreshLayout();
+        });
+
+        // Drag events
+        itemEl.addEventListener('dragstart', (e) => {
+          this.dragIndex = itemIdx;
+          itemEl.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+        });
+
+        itemEl.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          itemEl.classList.add('drag-over');
+        });
+
+        itemEl.addEventListener('dragleave', () => {
+          itemEl.classList.remove('drag-over');
+        });
+
+        itemEl.addEventListener('drop', (e) => {
+          e.preventDefault();
+          itemEl.classList.remove('drag-over');
+          if (this.dragIndex === null) return;
+          const targetIdx = Number(itemEl.dataset.index);
+          if (Number.isNaN(targetIdx) || targetIdx === this.dragIndex) return;
+          const [moved] = this.layout.splice(this.dragIndex, 1);
+          this.layout.splice(targetIdx, 0, moved);
+          this.dragIndex = null;
+          refreshLayout();
+        });
+
+        itemEl.addEventListener('dragend', () => {
+          itemEl.classList.remove('drag-over', 'dragging');
+          this.dragIndex = null;
         });
       });
 
@@ -296,10 +333,15 @@ class OverlayNoteUISettingTab extends PluginSettingTab {
     containerEl.empty();
     containerEl.classList.add('overlay-note-ui-settings');
     containerEl.createEl('h2', { text: 'Overlay Note UI' });
+    containerEl.createEl('p', {
+      text: 'Настройте кнопки оверлея и их порядок, выберите пресеты и управляемые элементы. Все опции сгруппированы для быстрого доступа.'
+    });
 
     // Default menu selector
-    containerEl.createEl('h3', { text: 'Default Menu' });
-    const defaultWrap = containerEl.createDiv();
+    const defaultCard = containerEl.createDiv({ cls: 'onu-card' });
+    defaultCard.createEl('h3', { text: 'Меню по умолчанию' });
+    defaultCard.createEl('p', { cls: 'onu-muted', text: 'Выберите меню, которое будет использоваться для новых заметок.' });
+    const defaultWrap = defaultCard.createDiv({ cls: 'onu-inline-control' });
     const refreshDefault = () => {
       defaultWrap.empty();
       const sel = defaultWrap.createEl('select');
@@ -315,20 +357,20 @@ class OverlayNoteUISettingTab extends PluginSettingTab {
     refreshDefault();
 
     // Menus list
-    containerEl.createEl('h3', { text: 'Menus' });
-    const menusWrap = containerEl.createDiv();
+    const menusCard = containerEl.createDiv({ cls: 'onu-card' });
+    menusCard.createEl('h3', { text: 'Меню' });
+    menusCard.createEl('p', { cls: 'onu-muted', text: 'Редактируйте состав, ориентацию и внешний вид каждого меню. Перетаскивайте элементы макета, чтобы менять порядок кнопок.' });
+    const menusWrap = menusCard.createDiv({ cls: 'onu-menu-list' });
     const refreshMenus = () => {
       menusWrap.empty();
       this.plugin.settings.menus.forEach((menu, menuIdx) => {
-        const menuBox = menusWrap.createDiv({ cls: 'setting-item', attr: { 'data-menu-idx': menuIdx } });
-        const info = menuBox.createDiv({ cls: 'setting-item-info' });
-        info.createDiv({ cls: 'setting-item-name', text: menu.name });
-        info.createDiv({ cls: 'setting-item-description', text: menu.id });
-
-        const ctrl = menuBox.createDiv({ cls: 'setting-item-control' });
+        const menuBox = menusWrap.createDiv({ cls: 'setting-item onu-menu-card', attr: { 'data-menu-idx': menuIdx } });
+        const header = menuBox.createDiv({ cls: 'onu-menu-header' });
+        header.createDiv({ cls: 'setting-item-name', text: menu.name });
+        header.createDiv({ cls: 'setting-item-description', text: menu.id });
 
         // Menu settings
-        const menuSettings = ctrl.createEl('div', { cls: 'menu-settings' });
+        const menuSettings = menuBox.createEl('div', { cls: 'menu-settings onu-control-grid' });
 
         // ID
         const idSet = menuSettings.createEl('div');
@@ -414,11 +456,6 @@ class OverlayNoteUISettingTab extends PluginSettingTab {
           });
           modal.open();
         };
-        menuSettings.style.display = 'flex';
-        menuSettings.style.flexWrap = 'wrap';
-        menuSettings.style.gap = '6px';
-        menuSettings.style.alignItems = 'center';
-
         // Delete menu
         const del = menuSettings.createEl('button', { text: 'Delete' });
         del.addEventListener('click', async () => {
@@ -432,11 +469,12 @@ class OverlayNoteUISettingTab extends PluginSettingTab {
       });
 
       // Add new menu
-      const addMenu = menusWrap.createDiv({ cls: 'setting-item' });
-      addMenu.createDiv({ cls: 'setting-item-info' })
-        .createDiv({ cls: 'setting-item-name', text: 'Add Menu' });
+      const addMenu = menusWrap.createDiv({ cls: 'setting-item onu-add-card' });
+      const addInfo = addMenu.createDiv({ cls: 'setting-item-info' });
+      addInfo.createDiv({ cls: 'setting-item-name', text: 'Добавить меню' });
+      addInfo.createDiv({ cls: 'setting-item-description', text: 'Создайте новый пресет на основе текущих настроек.' });
       const ctrl = addMenu.createDiv({ cls: 'setting-item-control' });
-      const btn = ctrl.createEl('button', { text: 'New Menu' });
+      const btn = ctrl.createEl('button', { text: 'Новое меню' });
       btn.addEventListener('click', async () => {
         const newId = `menu-${Date.now()}`;
         this.plugin.settings.menus.push({
@@ -455,12 +493,14 @@ class OverlayNoteUISettingTab extends PluginSettingTab {
     refreshMenus();
 
     // JSON Export/Import (for advanced users)
-    containerEl.createEl('h3', { text: 'Export/Import Menus (Advanced)' });
-    const ta = containerEl.createEl('textarea', { cls: 'overlay-note-ui-json-editor' });
+    const exportCard = containerEl.createDiv({ cls: 'onu-card' });
+    exportCard.createEl('h3', { text: 'Экспорт / Импорт' });
+    exportCard.createEl('p', { cls: 'onu-muted', text: 'Скопируйте или вставьте JSON конфигурации для резервного копирования или обмена пресетами.' });
+    const ta = exportCard.createEl('textarea', { cls: 'overlay-note-ui-json-editor' });
     const refreshTA = () => ta.value = JSON.stringify(this.plugin.settings.menus, null, 2);
     refreshTA();
 
-    new Setting(containerEl)
+    new Setting(exportCard)
       .addButton(b => b.setButtonText('Copy JSON')
         .onClick(async () => {
           try { await navigator.clipboard.writeText(ta.value); new Notice('Copied'); }
