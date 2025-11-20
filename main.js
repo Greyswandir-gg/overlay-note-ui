@@ -333,6 +333,9 @@ class OverlayNoteUISettingTab extends PluginSettingTab {
     containerEl.empty();
     containerEl.classList.add('overlay-note-ui-settings');
     containerEl.createEl('h2', { text: 'Overlay Note UI' });
+    containerEl.createEl('p', {
+      text: 'Настройте кнопки оверлея и их порядок, выберите пресеты и управляемые элементы. Все опции сгруппированы для быстрого доступа.'
+    });
 
     const makeCard = (title, desc) => {
       const card = containerEl.createDiv({ cls: 'onu-card' });
@@ -374,7 +377,7 @@ class OverlayNoteUISettingTab extends PluginSettingTab {
         const ctrl = menuBox.createDiv({ cls: 'onu-menu-card__body' });
 
         // Menu settings
-        const menuSettings = ctrl.createEl('div', { cls: 'menu-settings' });
+        const menuSettings = menuBox.createEl('div', { cls: 'menu-settings onu-control-grid' });
 
         // ID
         const idSet = menuSettings.createEl('div', { cls: 'onu-field-row' });
